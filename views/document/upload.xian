@@ -1,0 +1,108 @@
+{{> head}}
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+  {{> sidebar}}
+
+  <div class="md:pl-64 flex-1 flex flex-col min-w-0">
+    {{> topbar}}
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-3xl w-full mx-auto space-y-6">
+      
+      {{#if error_msg}}
+        <div class="flex items-center space-x-3 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 shadow-sm">
+          <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          <span class="text-sm font-medium">{{error_msg}}</span>
+        </div>
+      {{/if}}
+
+      <div class="bg-white rounded-xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+        <!-- Header -->
+        <div class="mb-6 pb-4 border-b border-slate-200 flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-slate-900">Upload Personnel Document</h1>
+            <p class="text-sm text-slate-500 mt-0.5">Attach firearms qualification, medical clearance, background checks, or certifications</p>
+          </div>
+          <a href="/document" class="text-sm text-slate-500 hover:text-slate-800 font-medium">← Back to Documents</a>
+        </div>
+
+        <form method="POST" action="/document/upload" enctype="multipart/form-data" class="space-y-6">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Select Personnel Member *</label>
+            <select name="personnelId" required class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition">
+              <option value="">-- Choose Personnel --</option>
+              {{#each personnelList}}
+                <option value="{{this.id}}" {{#if (eq (json this.id) (json ../selectedPersonnelId))}}selected{{/if}}>
+                  {{this.firstName}} {{this.lastName}} ({{this.employeeId}} - {{this.department}})
+                </option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Document Title *</label>
+              <input type="text" name="documentName" placeholder="e.g. Annual Firearm Qualification 2026" required class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Classification Type *</label>
+              <select name="documentType" required class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition">
+                <option value="">-- Choose Classification --</option>
+                <option value="ID Proof">ID Proof</option>
+                <option value="Firearm Certification">Firearm Certification</option>
+                <option value="Medical Clearance">Medical Clearance</option>
+                <option value="Background Check">Background Check</option>
+                <option value="Duty Order">Duty Order</option>
+                <option value="Training Certificate">Training Certificate</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Date Issued</label>
+              <input type="date" name="issuedDate" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Date of Expiry</label>
+              <input type="date" name="expiryDate" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Status</label>
+              <select name="status" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition">
+                <option value="valid" selected>Valid / Verified</option>
+                <option value="pending">Pending Verification</option>
+                <option value="expired">Expired</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- File Upload Zone -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Select File (PDF, DOCX, TXT, JPG, PNG - Max 15MB) *</label>
+            <div class="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl p-5 text-center bg-slate-50 transition">
+              <input type="file" name="documentFile" required class="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Verification Notes / Remarks</label>
+            <textarea name="remarks" rows="2" placeholder="Issuing authority, serial numbers, or certification details..." class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition"></textarea>
+          </div>
+
+          <div class="flex items-center gap-3 pt-4 border-t border-slate-200">
+            <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-sm transition">
+              Upload Document
+            </button>
+            <a href="/document" class="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-medium text-sm rounded-lg border border-slate-300 shadow-sm transition">
+              Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+
+    </main>
+
+    {{> footer}}
+  </div>

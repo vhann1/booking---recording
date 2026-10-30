@@ -1,0 +1,166 @@
+{{> head}}
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+  {{> sidebar}}
+
+  <div class="md:pl-64 flex-1 flex flex-col min-w-0">
+    {{> topbar}}
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+      
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-2 border-b border-slate-200">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900 tracking-tight">System Audit &amp; Activity Logs</h1>
+          <p class="text-slate-500 text-sm mt-0.5">Immutable audit trail of administrator actions, record mutations, and authentication events</p>
+        </div>
+        <div class="text-xs text-slate-600 px-3 py-1.5 rounded-lg bg-white border border-slate-200 shadow-xs">
+          Total Logged Actions: <strong class="text-slate-900 font-semibold">{{totalCount}}</strong>
+        </div>
+      </div>
+
+      <!-- Filter Matrix -->
+      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+        <form method="GET" action="/audit-logs" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div>
+            <select name="action" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition">
+              <option value="">All Actions</option>
+              <option value="LOGIN" {{#if (eq filters.action 'LOGIN')}}selected{{/if}}>LOGIN</option>
+              <option value="LOGIN_ATTEMPT" {{#if (eq filters.action 'LOGIN_ATTEMPT')}}selected{{/if}}>LOGIN_ATTEMPT</option>
+              <option value="LOGOUT" {{#if (eq filters.action 'LOGOUT')}}selected{{/if}}>LOGOUT</option>
+              <option value="CREATE" {{#if (eq filters.action 'CREATE')}}selected{{/if}}>CREATE</option>
+              <option value="UPDATE" {{#if (eq filters.action 'UPDATE')}}selected{{/if}}>UPDATE</option>
+              <option value="DELETE" {{#if (eq filters.action 'DELETE')}}selected{{/if}}>DELETE</option>
+              <option value="UPLOAD" {{#if (eq filters.action 'UPLOAD')}}selected{{/if}}>UPLOAD</option>
+              <option value="PASSWORD_RESET" {{#if (eq filters.action 'PASSWORD_RESET')}}selected{{/if}}>PASSWORD_RESET</option>
+            </select>
+          </div>
+
+          <div>
+            <select name="entityType" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition">
+              <option value="">All Entity Types</option>
+              <option value="Personnel" {{#if (eq filters.entityType 'Personnel')}}selected{{/if}}>Personnel</option>
+              <option value="Assignment" {{#if (eq filters.entityType 'Assignment')}}selected{{/if}}>Assignment</option>
+              <option value="Attendance" {{#if (eq filters.entityType 'Attendance')}}selected{{/if}}>Attendance</option>
+              <option value="Document" {{#if (eq filters.entityType 'Document')}}selected{{/if}}>Document</option>
+              <option value="Shift" {{#if (eq filters.entityType 'Shift')}}selected{{/if}}>Shift</option>
+              <option value="User" {{#if (eq filters.entityType 'User')}}selected{{/if}}>User</option>
+            </select>
+          </div>
+
+          <div>
+            <select name="status" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition">
+              <option value="">All Statuses</option>
+              <option value="success" {{#if (eq filters.status 'success')}}selected{{/if}}>Success</option>
+              <option value="failure" {{#if (eq filters.status 'failure')}}selected{{/if}}>Failure</option>
+            </select>
+          </div>
+
+          <div class="flex gap-2">
+            <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold shadow-sm transition">
+              Filter
+            </button>
+            <a href="/audit-logs" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold transition flex items-center justify-center" title="Reset Filters">
+              ↺
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Main Logs Table -->
+      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+        {{#if logs.length}}
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                <tr>
+                  <th class="px-5 py-3">Timestamp</th>
+                  <th class="px-5 py-3">Operator</th>
+                  <th class="px-5 py-3">Action</th>
+                  <th class="px-5 py-3">Target Entity</th>
+                  <th class="px-5 py-3">IP Address</th>
+                  <th class="px-5 py-3">Status</th>
+                  <th class="px-5 py-3 text-right">Details</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-xs">
+                {{#each logs}}
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-5 py-3.5 text-slate-500 font-mono whitespace-nowrap">{{formatDate this.createdAt}} {{formatTime this.createdAt}}</td>
+                    <td class="px-5 py-3.5 font-medium text-slate-900">
+                      {{#if this.User}}
+                        {{this.User.name}} <span class="text-[11px] text-slate-400 font-normal">({{this.User.role}})</span>
+                      {{else}}
+                        <span class="text-slate-400 font-mono">UID: {{this.userId}}</span>
+                      {{/if}}
+                    </td>
+                    <td class="px-5 py-3.5 whitespace-nowrap">
+                      <span class="inline-block px-2.5 py-0.5 rounded text-[11px] font-semibold uppercase
+                        {{#if (eq this.action 'DELETE')}}bg-red-50 text-red-700 border border-red-200
+                        {{else if (eq this.action 'CREATE')}}bg-emerald-50 text-emerald-700 border border-emerald-200
+                        {{else if (eq this.action 'UPDATE')}}bg-amber-50 text-amber-700 border border-amber-200
+                        {{else if (eq this.action 'LOGIN')}}bg-blue-50 text-blue-700 border border-blue-200
+                        {{else}}bg-slate-100 text-slate-700 border border-slate-200{{/if}}">
+                        {{this.action}}
+                      </span>
+                    </td>
+                    <td class="px-5 py-3.5 text-slate-700">
+                      {{this.entityType}} {{#if this.entityId}}#{{this.entityId}}{{/if}}
+                    </td>
+                    <td class="px-5 py-3.5 text-slate-500 font-mono text-xs">{{this.ipAddress}}</td>
+                    <td class="px-5 py-3.5">
+                      <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-medium uppercase {{#if (eq this.status 'success')}}text-emerald-700 bg-emerald-50 border border-emerald-200{{else}}text-red-700 bg-red-50 border border-red-200{{/if}}">
+                        {{this.status}}
+                      </span>
+                    </td>
+                    <td class="px-5 py-3.5 text-right">
+                      {{#if (or this.oldValues this.newValues)}}
+                        <details class="cursor-pointer text-left inline-block">
+                          <summary class="text-blue-600 hover:text-blue-700 text-xs font-medium">View Diff ▾</summary>
+                          <div class="mt-2 p-3 bg-slate-900 border border-slate-800 text-slate-200 rounded-lg text-xs overflow-auto max-w-sm max-h-48 text-left font-mono shadow-lg">
+                            {{#if this.oldValues}}
+                              <div class="text-red-400 font-bold mb-1">Old State:</div>
+                              <pre class="whitespace-pre-wrap mb-2 text-[10px] text-slate-400">{{json this.oldValues}}</pre>
+                            {{/if}}
+                            {{#if this.newValues}}
+                              <div class="text-emerald-400 font-bold mb-1">New State:</div>
+                              <pre class="whitespace-pre-wrap text-[10px] text-slate-300">{{json this.newValues}}</pre>
+                            {{/if}}
+                          </div>
+                        </details>
+                      {{else}}
+                        <span class="text-slate-400">--</span>
+                      {{/if}}
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div class="flex items-center justify-between px-5 py-3 bg-slate-50 border-t border-slate-200 text-xs text-slate-600">
+            <span>Showing page {{currentPage}} of {{totalPages}}</span>
+            <div class="flex space-x-2">
+              {{#if (gt currentPage 1)}}
+                <a href="/audit-logs?page={{subtract currentPage 1}}" class="px-3 py-1 rounded bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 shadow-xs transition">
+                  ← Previous
+                </a>
+              {{/if}}
+              {{#if (lt currentPage totalPages)}}
+                <a href="/audit-logs?page={{add currentPage 1}}" class="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-xs transition">
+                  Next →
+                </a>
+              {{/if}}
+            </div>
+          </div>
+        {{else}}
+          <div class="p-12 text-center text-slate-400 text-xs">
+            No audit log records found matching your filter criteria.
+          </div>
+        {{/if}}
+      </div>
+
+    </main>
+
+    {{> footer}}
+  </div>

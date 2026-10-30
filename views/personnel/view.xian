@@ -1,0 +1,257 @@
+{{> head}}
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+  {{> sidebar}}
+
+  <div class="md:pl-64 flex-1 flex flex-col min-w-0">
+    {{> topbar}}
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto space-y-6">
+      
+      <!-- Top Profile Card -->
+      <div class="bg-white rounded-xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          <div class="flex items-center space-x-4">
+            <div class="w-16 h-16 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-sm">
+              {{personnel.firstName.[0]}}{{personnel.lastName.[0]}}
+            </div>
+            <div>
+              <div class="flex items-center space-x-2.5">
+                <h1 class="text-2xl font-bold text-slate-900">{{personnel.firstName}} {{personnel.lastName}}</h1>
+                <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium uppercase
+                  {{#if (eq personnel.status 'active')}}bg-emerald-50 text-emerald-700 border border-emerald-200
+                  {{else if (eq personnel.status 'inactive')}}bg-slate-100 text-slate-600 border border-slate-200
+                  {{else}}bg-red-50 text-red-700 border border-red-200{{/if}}">
+                  {{personnel.status}}
+                </span>
+              </div>
+              <p class="text-sm text-slate-500 mt-1">
+                <span class="text-blue-700 font-mono font-semibold">{{personnel.employeeId}}</span> • {{personnel.designation}} • {{personnel.department}}
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap items-center gap-2">
+            <a href="/assignment/create?personnelId={{personnel.id}}" class="px-3.5 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium text-xs border border-blue-200 transition">
+              + Assign Shift
+            </a>
+            <a href="/document/upload?personnelId={{personnel.id}}" class="px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs transition">
+              + Upload Document
+            </a>
+            <a href="/personnel/edit/{{personnel.id}}" class="px-3.5 py-2 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-medium text-xs border border-slate-300 shadow-sm transition">
+              Edit Details
+            </a>
+            <a href="/personnel" class="px-3.5 py-2 rounded-lg bg-white hover:bg-slate-50 text-slate-600 font-medium text-xs border border-slate-300 shadow-sm transition">
+              ← Directory
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Contact & Identification -->
+        <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4 pb-2 border-b border-slate-100">
+            Contact &amp; Personal Info
+          </h3>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between py-1.5 border-b border-slate-50">
+              <span class="text-slate-500 text-xs">Official Email</span>
+              <a href="mailto:{{personnel.email}}" class="text-blue-600 hover:underline text-xs font-medium">{{personnel.email}}</a>
+            </div>
+            <div class="flex justify-between py-1.5 border-b border-slate-50">
+              <span class="text-slate-500 text-xs">Phone Number</span>
+              <span class="text-slate-800 text-xs font-medium">{{#if personnel.phone}}{{personnel.phone}}{{else}}--{{/if}}</span>
+            </div>
+            <div class="flex justify-between py-1.5 border-b border-slate-50">
+              <span class="text-slate-500 text-xs">Date of Birth</span>
+              <span class="text-slate-800 text-xs">{{#if personnel.dateOfBirth}}{{formatDate personnel.dateOfBirth}}{{else}}--{{/if}}</span>
+            </div>
+            <div class="flex justify-between py-1.5">
+              <span class="text-slate-500 text-xs">Residential Address</span>
+              <span class="text-slate-800 text-xs max-w-xs text-right">{{#if personnel.address}}{{personnel.address}}{{else}}--{{/if}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service & Posting Info -->
+        <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4 pb-2 border-b border-slate-100">
+            Facility Service &amp; Posting
+          </h3>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between py-1.5 border-b border-slate-50">
+              <span class="text-slate-500 text-xs">Employee ID</span>
+              <span class="text-blue-700 font-mono text-xs font-semibold">{{personnel.employeeId}}</span>
+            </div>
+            <div class="flex justify-between py-1.5 border-b border-slate-50">
+              <span class="text-slate-500 text-xs">Designation</span>
+              <span class="text-slate-800 font-medium text-xs">{{personnel.designation}}</span>
+            </div>
+            <div class="flex justify-between py-1.5 border-b border-slate-50">
+              <span class="text-slate-500 text-xs">Department</span>
+              <span class="text-slate-800 text-xs font-medium">{{personnel.department}}</span>
+            </div>
+            <div class="flex justify-between py-1.5">
+              <span class="text-slate-500 text-xs">Date Joined</span>
+              <span class="text-slate-800 text-xs">{{formatDate personnel.dateOfJoining}}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Shift Deployments -->
+      <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Duty Shift Assignments</h3>
+          <a href="/assignment/create?personnelId={{personnel.id}}" class="text-xs font-medium text-blue-600 hover:text-blue-700">+ Assign Shift</a>
+        </div>
+
+        {{#if assignments.length}}
+          <div class="overflow-x-auto border border-slate-200 rounded-lg">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-700 uppercase">
+                <tr>
+                  <th class="py-2.5 px-3">Shift</th>
+                  <th class="py-2.5 px-3">Post / Zone</th>
+                  <th class="py-2.5 px-3">Assignment Period</th>
+                  <th class="py-2.5 px-3">Status</th>
+                  <th class="py-2.5 px-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-xs">
+                {{#each assignments}}
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-3 font-semibold text-slate-900">
+                      {{this.Shift.name}}
+                      <span class="text-slate-500 font-normal">({{this.Shift.startTime}} - {{this.Shift.endTime}})</span>
+                    </td>
+                    <td class="py-3 px-3 text-slate-600">{{this.department}} {{#if this.zone}}• {{this.zone}}{{/if}}</td>
+                    <td class="py-3 px-3 text-slate-500">
+                      {{formatDate this.startDate}} {{#if this.endDate}}to {{formatDate this.endDate}}{{else}}(Current){{/if}}
+                    </td>
+                    <td class="py-3 px-3">
+                      <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium uppercase
+                        {{#if (eq this.status 'active')}}bg-emerald-50 text-emerald-700 border border-emerald-200
+                        {{else if (eq this.status 'completed')}}bg-blue-50 text-blue-700 border border-blue-200
+                        {{else}}bg-red-50 text-red-700 border border-red-200{{/if}}">
+                        {{this.status}}
+                      </span>
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                      <a href="/assignment/edit/{{this.id}}" class="text-blue-600 hover:underline font-medium">Edit</a>
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        {{else}}
+          <p class="text-slate-400 text-center py-6 text-xs">No active or historical shift assignments on file.</p>
+        {{/if}}
+      </div>
+
+      <!-- Compliance Documents -->
+      <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Certifications &amp; Attached Documents</h3>
+          <a href="/document/upload?personnelId={{personnel.id}}" class="text-xs font-medium text-blue-600 hover:text-blue-700">+ Upload Document</a>
+        </div>
+
+        {{#if documents.length}}
+          <div class="overflow-x-auto border border-slate-200 rounded-lg">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-700 uppercase">
+                <tr>
+                  <th class="py-2.5 px-3">Document Title</th>
+                  <th class="py-2.5 px-3">Type</th>
+                  <th class="py-2.5 px-3">Expiration</th>
+                  <th class="py-2.5 px-3">Status</th>
+                  <th class="py-2.5 px-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-xs">
+                {{#each documents}}
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-3 font-semibold text-slate-900">
+                      {{this.documentName}}
+                      <div class="text-[11px] text-slate-400">{{this.fileName}}</div>
+                    </td>
+                    <td class="py-3 px-3 text-slate-600">{{this.documentType}}</td>
+                    <td class="py-3 px-3 text-slate-500">
+                      {{#if this.expiryDate}}{{formatDate this.expiryDate}}{{else}}Permanent{{/if}}
+                    </td>
+                    <td class="py-3 px-3">
+                      <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium uppercase
+                        {{#if (eq this.status 'valid')}}bg-emerald-50 text-emerald-700 border border-emerald-200
+                        {{else if (eq this.status 'pending')}}bg-amber-50 text-amber-700 border border-amber-200
+                        {{else}}bg-red-50 text-red-700 border border-red-200{{/if}}">
+                        {{this.status}}
+                      </span>
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                      <a href="/document/view/{{this.id}}" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium">
+                        Download
+                      </a>
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        {{else}}
+          <p class="text-slate-400 text-center py-6 text-xs">No documents attached to this officer.</p>
+        {{/if}}
+      </div>
+
+      <!-- Muster Attendance History -->
+      <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Recent Attendance Records</h3>
+          <a href="/attendance/mark?personnelId={{personnel.id}}" class="text-xs font-medium text-blue-600 hover:text-blue-700">+ Mark Attendance</a>
+        </div>
+
+        {{#if attendanceStats.length}}
+          <div class="overflow-x-auto border border-slate-200 rounded-lg">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-700 uppercase">
+                <tr>
+                  <th class="py-2.5 px-3">Date</th>
+                  <th class="py-2.5 px-3">Check In</th>
+                  <th class="py-2.5 px-3">Check Out</th>
+                  <th class="py-2.5 px-3">Status</th>
+                  <th class="py-2.5 px-3">Remarks</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-xs">
+                {{#each attendanceStats}}
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-2.5 px-3 font-semibold text-slate-800">{{formatDate this.date}}</td>
+                    <td class="py-2.5 px-3 font-mono text-slate-600">{{#if this.checkIn}}{{this.checkIn}}{{else}}--{{/if}}</td>
+                    <td class="py-2.5 px-3 font-mono text-slate-600">{{#if this.checkOut}}{{this.checkOut}}{{else}}--{{/if}}</td>
+                    <td class="py-2.5 px-3">
+                      <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium uppercase
+                        {{#if (eq this.status 'present')}}bg-emerald-50 text-emerald-700 border border-emerald-200
+                        {{else if (eq this.status 'late')}}bg-amber-50 text-amber-700 border border-amber-200
+                        {{else}}bg-red-50 text-red-700 border border-red-200{{/if}}">
+                        {{this.status}}
+                      </span>
+                    </td>
+                    <td class="py-2.5 px-3 text-slate-500">{{#if this.remarks}}{{this.remarks}}{{else}}--{{/if}}</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        {{else}}
+          <p class="text-slate-400 text-center py-6 text-xs">No attendance entries on file for this officer.</p>
+        {{/if}}
+      </div>
+
+    </main>
+
+    {{> footer}}
+  </div>

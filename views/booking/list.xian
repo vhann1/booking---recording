@@ -1,0 +1,290 @@
+{{> head}}
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+  {{> sidebar}}
+
+  <div class="md:pl-64 flex-1 flex flex-col min-w-0">
+    {{> topbar}}
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+      
+      <!-- Flash Notifications -->
+      {{#if success_msg}}
+        <div class="flex items-center space-x-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 shadow-sm">
+          <svg class="w-5 h-5 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="text-sm font-medium">{{success_msg}}</span>
+        </div>
+      {{/if}}
+
+      {{#if error_msg}}
+        <div class="flex items-center space-x-3 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 shadow-sm">
+          <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          <span class="text-sm font-medium">{{error_msg}}</span>
+        </div>
+      {{/if}}
+
+      <!-- Page Header Banner -->
+      <div class="rounded-xl p-6 bg-gradient-to-r from-blue-900 via-blue-800 to-sky-700 text-white shadow-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <div class="inline-flex items-center space-x-2 px-2.5 py-0.5 rounded-full bg-white/15 border border-white/25 text-sky-100 text-xs font-semibold mb-1.5">
+            <span>Facility Booking &amp; Intake Control</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Facility Bookings &amp; Schedules</h1>
+          <p class="text-blue-100 text-xs sm:text-sm mt-0.5">Manage detainee intake bookings, legal &amp; family visitations, court transport escorts, and room reservations</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+          <a href="/booking/export/excel?bookingType={{filters.bookingType}}&status={{filters.status}}&bookingDate={{filters.bookingDate}}" 
+             class="px-3.5 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-white border border-white/30 font-medium text-xs shadow-sm transition flex items-center space-x-1.5"
+             title="Export bookings to Microsoft Excel">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <span>Download Excel (.xls)</span>
+          </a>
+          <a href="/booking/create" class="px-4 py-2 rounded-lg bg-white text-blue-900 hover:bg-blue-50 font-semibold text-xs shadow-sm transition flex items-center space-x-1.5">
+            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            <span>Create New Booking</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Booking KPI Summary Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+        <div class="bg-white rounded-xl p-4 border border-blue-200 shadow-sm text-center">
+          <div class="text-xs font-semibold uppercase text-blue-600">Total Bookings</div>
+          <div class="text-2xl font-bold text-slate-900 mt-1">{{stats.total}}</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-blue-200 shadow-sm text-center">
+          <div class="text-xs font-semibold uppercase text-sky-600">Scheduled Today</div>
+          <div class="text-2xl font-bold text-sky-600 mt-1">{{stats.today}}</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-blue-200 shadow-sm text-center">
+          <div class="text-xs font-semibold uppercase text-amber-600">Pending Approval</div>
+          <div class="text-2xl font-bold text-amber-600 mt-1">{{stats.pending}}</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-blue-200 shadow-sm text-center">
+          <div class="text-xs font-semibold uppercase text-blue-700">Active / Checked-In</div>
+          <div class="text-2xl font-bold text-blue-600 mt-1">{{stats.active}}</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-blue-200 shadow-sm text-center col-span-2 sm:col-span-1">
+          <div class="text-xs font-semibold uppercase text-emerald-600">Completed</div>
+          <div class="text-2xl font-bold text-emerald-600 mt-1">{{stats.completed}}</div>
+        </div>
+      </div>
+
+      <!-- Search & Multi-Filter Bar -->
+      <div class="bg-white rounded-xl p-4 border border-blue-200 shadow-sm">
+        <form method="GET" action="/booking" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <div class="lg:col-span-2 relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-blue-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </span>
+            <input type="text" name="search" value="{{filters.search}}" placeholder="Search Ref (BKG-...), subject name, ID, or zone..." class="w-full pl-9 pr-4 py-2 bg-white border border-blue-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-xs transition" />
+          </div>
+
+          <div>
+            <select name="bookingType" class="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-xs transition">
+              <option value="">All Booking Types</option>
+              <option value="Inmate Intake" {{#if (eq filters.bookingType 'Inmate Intake')}}selected{{/if}}>Inmate Intake</option>
+              <option value="Visitation" {{#if (eq filters.bookingType 'Visitation')}}selected{{/if}}>Visitation</option>
+              <option value="Legal Consultation" {{#if (eq filters.bookingType 'Legal Consultation')}}selected{{/if}}>Legal Consultation</option>
+              <option value="Court Transport" {{#if (eq filters.bookingType 'Court Transport')}}selected{{/if}}>Court Transport</option>
+              <option value="Facility Room" {{#if (eq filters.bookingType 'Facility Room')}}selected{{/if}}>Facility Room</option>
+              <option value="Medical Checkup" {{#if (eq filters.bookingType 'Medical Checkup')}}selected{{/if}}>Medical Checkup</option>
+            </select>
+          </div>
+
+          <div>
+            <select name="status" class="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-xs transition">
+              <option value="">All Statuses</option>
+              <option value="pending" {{#if (eq filters.status 'pending')}}selected{{/if}}>Pending</option>
+              <option value="approved" {{#if (eq filters.status 'approved')}}selected{{/if}}>Approved</option>
+              <option value="checked_in" {{#if (eq filters.status 'checked_in')}}selected{{/if}}>Checked-In</option>
+              <option value="completed" {{#if (eq filters.status 'completed')}}selected{{/if}}>Completed</option>
+              <option value="cancelled" {{#if (eq filters.status 'cancelled')}}selected{{/if}}>Cancelled</option>
+            </select>
+          </div>
+
+          <div class="flex gap-2">
+            <input type="date" name="bookingDate" value="{{filters.bookingDate}}" class="w-full px-2.5 py-2 bg-white border border-blue-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-xs transition" />
+            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition">
+              Filter
+            </button>
+            <a href="/booking" class="px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold border border-blue-200 transition flex items-center justify-center" title="Reset Filters">
+              ↺
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Main Bookings Table Card -->
+      <div class="bg-white rounded-xl border border-blue-200 overflow-hidden shadow-sm">
+        {{#if bookings.length}}
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-blue-200 text-xs font-semibold text-blue-900 uppercase tracking-wider">
+                <tr>
+                  <th class="px-4 py-3.5">Booking Ref</th>
+                  <th class="px-4 py-3.5">Subject / Visitor</th>
+                  <th class="px-4 py-3.5">Type &amp; Zone</th>
+                  <th class="px-4 py-3.5">Schedule</th>
+                  <th class="px-4 py-3.5">Duty Officer</th>
+                  <th class="px-4 py-3.5">Status</th>
+                  <th class="px-4 py-3.5 text-right">Workflow &amp; Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-blue-100 text-xs">
+                {{#each bookings}}
+                  <tr class="hover:bg-blue-50/50 transition-colors">
+                    <!-- Ref & Priority -->
+                    <td class="px-4 py-3.5 whitespace-nowrap">
+                      <a href="/booking/view/{{this.id}}" class="font-mono font-bold text-blue-700 hover:underline block">
+                        {{this.bookingNumber}}
+                      </a>
+                      <span class="inline-block mt-0.5 px-1.5 py-0.2 rounded text-[10px] font-semibold uppercase
+                        {{#if (eq this.priority 'urgent')}}bg-red-50 text-red-700 border border-red-200
+                        {{else if (eq this.priority 'high')}}bg-amber-50 text-amber-700 border border-amber-200
+                        {{else}}bg-blue-50 text-blue-600 border border-blue-200{{/if}}">
+                        {{this.priority}}
+                      </span>
+                    </td>
+
+                    <!-- Subject Details -->
+                    <td class="px-4 py-3.5">
+                      <a href="/booking/view/{{this.id}}" class="font-semibold text-slate-900 hover:text-blue-600 transition block text-sm">
+                        {{this.subjectName}}
+                      </a>
+                      <div class="text-[11px] text-slate-500 font-mono">
+                        {{#if this.subjectIdNumber}}ID: {{this.subjectIdNumber}}{{else}}No ID listed{{/if}}
+                        {{#if this.subjectContact}} • {{this.subjectContact}}{{/if}}
+                      </div>
+                    </td>
+
+                    <!-- Booking Type & Zone -->
+                    <td class="px-4 py-3.5">
+                      <span class="inline-block px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-50 text-blue-800 border border-blue-200">
+                        {{this.bookingType}}
+                      </span>
+                      <div class="text-[11px] text-slate-600 font-medium mt-1">{{this.facilityZone}}</div>
+                    </td>
+
+                    <!-- Schedule -->
+                    <td class="px-4 py-3.5 whitespace-nowrap">
+                      <div class="font-semibold text-slate-800">{{formatDate this.bookingDate}}</div>
+                      <div class="text-[11px] text-blue-700 font-mono">{{this.startTime}}{{#if this.endTime}} – {{this.endTime}}{{/if}}</div>
+                    </td>
+
+                    <!-- Duty Officer -->
+                    <td class="px-4 py-3.5">
+                      {{#if this.Personnel}}
+                        <a href="/personnel/view/{{this.Personnel.id}}" class="font-medium text-slate-800 hover:text-blue-600 block">
+                          {{this.Personnel.firstName}} {{this.Personnel.lastName}}
+                        </a>
+                        <span class="text-[10px] text-slate-500 font-mono">{{this.Personnel.employeeId}}</span>
+                      {{else}}
+                        <span class="text-slate-400 italic">Unassigned</span>
+                      {{/if}}
+                    </td>
+
+                    <!-- Status Badge -->
+                    <td class="px-4 py-3.5 whitespace-nowrap">
+                      <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase
+                        {{#if (eq this.status 'pending')}}bg-amber-50 text-amber-700 border border-amber-200
+                        {{else if (eq this.status 'approved')}}bg-blue-50 text-blue-700 border border-blue-200
+                        {{else if (eq this.status 'checked_in')}}bg-sky-100 text-sky-800 border border-sky-300
+                        {{else if (eq this.status 'completed')}}bg-emerald-50 text-emerald-700 border border-emerald-200
+                        {{else}}bg-red-50 text-red-700 border border-red-200{{/if}}">
+                        {{this.status}}
+                      </span>
+                    </td>
+
+                    <!-- Quick Workflow & Actions -->
+                    <td class="px-4 py-3.5 text-right space-x-1 whitespace-nowrap">
+                      {{#if (eq this.status 'pending')}}
+                        <form method="POST" action="/booking/status/{{this.id}}" style="display:inline;">
+                          <input type="hidden" name="status" value="approved" />
+                          <button type="submit" class="px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-semibold shadow-xs transition" title="Approve Booking">
+                            ✓ Approve
+                          </button>
+                        </form>
+                      {{/if}}
+
+                      {{#if (eq this.status 'approved')}}
+                        <form method="POST" action="/booking/status/{{this.id}}" style="display:inline;">
+                          <input type="hidden" name="status" value="checked_in" />
+                          <button type="submit" class="px-2 py-1 rounded bg-sky-600 hover:bg-sky-700 text-white text-[11px] font-semibold shadow-xs transition" title="Mark Checked-In">
+                            → Check-In
+                          </button>
+                        </form>
+                      {{/if}}
+
+                      {{#if (eq this.status 'checked_in')}}
+                        <form method="POST" action="/booking/status/{{this.id}}" style="display:inline;">
+                          <input type="hidden" name="status" value="completed" />
+                          <button type="submit" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold shadow-xs transition" title="Complete & Check-Out">
+                            ✓ Complete
+                          </button>
+                        </form>
+                      {{/if}}
+
+                      <a href="/booking/view/{{this.id}}" class="inline-block px-2.5 py-1 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-medium transition">
+                        Pass
+                      </a>
+                      <a href="/booking/edit/{{this.id}}" class="inline-block px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-slate-700 border border-blue-200 text-xs font-medium transition">
+                        Edit
+                      </a>
+                      <form method="POST" action="/booking/delete/{{this.id}}" style="display:inline;" onsubmit="return confirm('Delete booking {{this.bookingNumber}}?')">
+                        <button type="submit" class="px-2 py-1 rounded bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-medium transition">
+                          Del
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div class="flex items-center justify-between px-5 py-3 bg-blue-50/50 border-t border-blue-200 text-xs text-slate-600">
+            <span>Showing page {{currentPage}} of {{totalPages}}</span>
+            <div class="flex space-x-2">
+              {{#if (gt currentPage 1)}}
+                <a href="/booking?page={{subtract currentPage 1}}" class="px-3 py-1 rounded bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 shadow-xs transition">
+                  ← Previous
+                </a>
+              {{/if}}
+              {{#if (lt currentPage totalPages)}}
+                <a href="/booking?page={{add currentPage 1}}" class="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-xs transition">
+                  Next →
+                </a>
+              {{/if}}
+            </div>
+          </div>
+        {{else}}
+          <div class="p-12 text-center text-slate-500 space-y-2">
+            <svg class="mx-auto h-9 w-9 text-blue-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <p class="text-sm font-semibold text-slate-800">No facility bookings found</p>
+            <p class="text-xs text-slate-500">Create a new booking for visitation, inmate intake, court transport, or room reservation.</p>
+            <a href="/booking/create" class="inline-block mt-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition">
+              + Create New Booking
+            </a>
+          </div>
+        {{/if}}
+      </div>
+
+    </main>
+
+    {{> footer}}
+  </div>
+

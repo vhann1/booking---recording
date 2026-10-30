@@ -1,0 +1,207 @@
+{{> head}}
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+  {{> sidebar}}
+
+  <div class="md:pl-64 flex-1 flex flex-col min-w-0">
+    {{> topbar}}
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+      
+      {{#if success_msg}}
+        <div class="flex items-center space-x-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 shadow-sm">
+          <svg class="w-5 h-5 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="text-sm font-medium">{{success_msg}}</span>
+        </div>
+      {{/if}}
+
+      {{#if error_msg}}
+        <div class="flex items-center space-x-3 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 shadow-sm">
+          <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          <span class="text-sm font-medium">{{error_msg}}</span>
+        </div>
+      {{/if}}
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-2 border-b border-slate-200">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Muster &amp; Attendance Log</h1>
+          <p class="text-slate-500 text-sm mt-0.5">Daily rollcall records, check-in timestamps, duty verification, and remarks</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <a href="/reports/export/excel" class="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs shadow-sm transition flex items-center space-x-1.5" title="Export to Microsoft Excel">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <span>Download Excel</span>
+          </a>
+          <a href="/attendance/mark" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs shadow-sm transition flex items-center space-x-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>Record Muster</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Live Attendance Telemetry Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm text-center">
+          <div class="text-xs font-semibold uppercase text-slate-500">Today Marked</div>
+          <div class="text-2xl font-bold text-slate-900 mt-1" id="markedCount">-</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm text-center">
+          <div class="text-xs font-semibold uppercase text-slate-500">Present on Duty</div>
+          <div class="text-2xl font-bold text-emerald-600 mt-1" id="presentCount">-</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm text-center">
+          <div class="text-xs font-semibold uppercase text-slate-500">Absent / Off</div>
+          <div class="text-2xl font-bold text-red-600 mt-1" id="absentCount">-</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm text-center">
+          <div class="text-xs font-semibold uppercase text-slate-500">Late Arrival</div>
+          <div class="text-2xl font-bold text-amber-600 mt-1" id="lateCount">-</div>
+        </div>
+      </div>
+
+      <!-- Filter Matrix -->
+      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+        <form method="GET" action="/attendance" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div>
+            <select name="personnelId" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition">
+              <option value="">All Personnel</option>
+              {{#each personnel}}
+                <option value="{{this.id}}" {{#if (eq (json this.id) (json ../selectedPersonnelId))}}selected{{/if}}>
+                  {{this.firstName}} {{this.lastName}} ({{this.employeeId}})
+                </option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div>
+            <input type="date" name="date" value="{{filters.date}}" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition" />
+          </div>
+
+          <div>
+            <select name="status" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition">
+              <option value="">All Statuses</option>
+              <option value="present" {{#if (eq filters.status 'present')}}selected{{/if}}>Present</option>
+              <option value="late" {{#if (eq filters.status 'late')}}selected{{/if}}>Late</option>
+              <option value="absent" {{#if (eq filters.status 'absent')}}selected{{/if}}>Absent</option>
+              <option value="early_leave" {{#if (eq filters.status 'early_leave')}}selected{{/if}}>Early Leave</option>
+              <option value="holiday" {{#if (eq filters.status 'holiday')}}selected{{/if}}>Official Leave</option>
+            </select>
+          </div>
+
+          <div class="flex gap-2">
+            <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold shadow-sm transition">
+              Filter
+            </button>
+            <a href="/attendance" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold transition flex items-center justify-center" title="Reset Filters">
+              ↺
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Main Attendance Table -->
+      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+        {{#if attendance.length}}
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                <tr>
+                  <th class="px-5 py-3">Date</th>
+                  <th class="px-5 py-3">Officer</th>
+                  <th class="px-5 py-3">Time In</th>
+                  <th class="px-5 py-3">Time Out</th>
+                  <th class="px-5 py-3">Status</th>
+                  <th class="px-5 py-3">Remarks</th>
+                  <th class="px-5 py-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-xs">
+                {{#each attendance}}
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-5 py-3.5 font-semibold text-slate-800 whitespace-nowrap">{{formatDate this.date}}</td>
+                    <td class="px-5 py-3.5">
+                      <a href="/personnel/view/{{this.Personnel.id}}" class="font-semibold text-slate-900 hover:text-blue-600 transition block">
+                        {{this.Personnel.firstName}} {{this.Personnel.lastName}}
+                      </a>
+                      <div class="text-[11px] text-slate-400 font-mono">{{this.Personnel.employeeId}} • {{this.Personnel.department}}</div>
+                    </td>
+                    <td class="px-5 py-3.5 font-mono text-slate-700">{{#if this.checkIn}}{{this.checkIn}}{{else}}--{{/if}}</td>
+                    <td class="px-5 py-3.5 font-mono text-slate-700">{{#if this.checkOut}}{{this.checkOut}}{{else}}--{{/if}}</td>
+                    <td class="px-5 py-3.5">
+                      <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium uppercase
+                        {{#if (eq this.status 'present')}}bg-emerald-50 text-emerald-700 border border-emerald-200
+                        {{else if (eq this.status 'late')}}bg-amber-50 text-amber-700 border border-amber-200
+                        {{else if (eq this.status 'absent')}}bg-red-50 text-red-700 border border-red-200
+                        {{else}}bg-slate-100 text-slate-700 border border-slate-200{{/if}}">
+                        {{this.status}}
+                      </span>
+                    </td>
+                    <td class="px-5 py-3.5 text-slate-500 max-w-xs truncate">{{#if this.remarks}}{{this.remarks}}{{else}}--{{/if}}</td>
+                    <td class="px-5 py-3.5 text-right space-x-1 whitespace-nowrap">
+                      <a href="/attendance/edit/{{this.id}}" class="inline-block px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-medium transition">
+                        Edit
+                      </a>
+                      <form method="POST" action="/attendance/delete/{{this.id}}" style="display:inline;" onsubmit="return confirm('Delete this attendance record?')">
+                        <button type="submit" class="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-medium transition">
+                          Delete
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div class="flex items-center justify-between px-5 py-3 bg-slate-50 border-t border-slate-200 text-xs text-slate-600">
+            <span>Showing page {{currentPage}} of {{totalPages}}</span>
+            <div class="flex space-x-2">
+              {{#if (gt currentPage 1)}}
+                <a href="/attendance?page={{subtract currentPage 1}}" class="px-3 py-1 rounded bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 shadow-xs transition">
+                  ← Previous
+                </a>
+              {{/if}}
+              {{#if (lt currentPage totalPages)}}
+                <a href="/attendance?page={{add currentPage 1}}" class="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-xs transition">
+                  Next →
+                </a>
+              {{/if}}
+            </div>
+          </div>
+        {{else}}
+          <div class="p-12 text-center text-slate-500 space-y-2">
+            <svg class="mx-auto h-8 w-8 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="text-sm font-semibold text-slate-700">No attendance records found</p>
+            <a href="/attendance/mark" class="inline-block text-xs font-medium text-blue-600 hover:underline">+ Record Today's Muster</a>
+          </div>
+        {{/if}}
+      </div>
+
+    </main>
+
+    {{> footer}}
+  </div>
+
+  <script>
+    fetch('/attendance/stats')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('markedCount').textContent = data.marked || 0;
+        document.getElementById('presentCount').textContent = data.present || 0;
+        document.getElementById('absentCount').textContent = data.absent || 0;
+        document.getElementById('lateCount').textContent = data.late || 0;
+      })
+      .catch(err => console.error(err));
+  </script>

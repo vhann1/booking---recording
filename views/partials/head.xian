@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} | Jail Personnel &amp; Booking System</title>
+  
+  <!-- Inter & JetBrains Mono Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            /* Harmonious Blue-Blended System Palette */
+            slate: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#5b8bd4',
+              500: '#3b669e',
+              600: '#274d82',
+              700: '#1d3c6a',
+              800: '#152c52',
+              900: '#0c1f42',
+              950: '#07132b',
+            },
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Cohesive Blue-Blended System Theme */
+    body {
+      background: linear-gradient(145deg, #f0f7ff 0%, #e6f2ff 50%, #dbeafe 100%) fixed !important;
+      color: #152c52;
+    }
+
+    /* Soft Blue-Blended Cards */
+    main .bg-white {
+      background-color: rgba(255, 255, 255, 0.96) !important;
+      border-color: #bfdbfe !important;
+      box-shadow: 0 4px 18px -3px rgba(37, 99, 235, 0.08), 0 2px 6px -2px rgba(29, 78, 216, 0.05) !important;
+    }
+
+    /* Blended Blue Table Headers */
+    table thead {
+      background: linear-gradient(90deg, #eff6ff 0%, #e0effe 100%) !important;
+      border-bottom: 1px solid #bfdbfe !important;
+    }
+    table thead th {
+      color: #1e3a8a !important;
+    }
+    table tbody tr:hover {
+      background-color: #f0f7ff !important;
+    }
+
+    /* Blue-themed Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #e0effe;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #93c5fd;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b82f6;
+    }
+
+    @media print {
+      aside, header, .no-print, .print\:hidden {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+      }
+      main, .md\:pl-64 {
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+    }
+  </style>
+</head>

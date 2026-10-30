@@ -1,0 +1,104 @@
+{{> head}}
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+  {{> sidebar}}
+
+  <div class="md:pl-64 flex-1 flex flex-col min-w-0">
+    {{> topbar}}
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+      
+      {{#if success_msg}}
+        <div class="flex items-center space-x-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 shadow-sm">
+          <svg class="w-5 h-5 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="text-sm font-medium">{{success_msg}}</span>
+        </div>
+      {{/if}}
+
+      {{#if error_msg}}
+        <div class="flex items-center space-x-3 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 shadow-sm">
+          <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          <span class="text-sm font-medium">{{error_msg}}</span>
+        </div>
+      {{/if}}
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-2 border-b border-slate-200">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900 tracking-tight">User Accounts &amp; Access Roles</h1>
+          <p class="text-slate-500 text-sm mt-0.5">Manage operator credentials, assign roles (Admin, Staff, Viewer), and manage account statuses</p>
+        </div>
+      </div>
+
+      <!-- Users Table -->
+      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-700 uppercase tracking-wider">
+              <tr>
+                <th class="px-5 py-3">User Name</th>
+                <th class="px-5 py-3">Email Address</th>
+                <th class="px-5 py-3">System Role</th>
+                <th class="px-5 py-3">Status</th>
+                <th class="px-5 py-3">Registered Date</th>
+                <th class="px-5 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs">
+              {{#each users}}
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="px-5 py-3.5 font-semibold text-slate-900">
+                    {{this.name}}
+                    {{#if (eq this.id ../user.id)}}
+                      <span class="ml-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                        YOU
+                      </span>
+                    {{/if}}
+                  </td>
+                  <td class="px-5 py-3.5 text-slate-600 font-mono text-xs">{{this.email}}</td>
+                  <td class="px-5 py-3.5">
+                    <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium uppercase
+                      {{#if (eq this.role 'admin')}}bg-purple-50 text-purple-700 border border-purple-200
+                      {{else if (eq this.role 'staff')}}bg-blue-50 text-blue-700 border border-blue-200
+                      {{else}}bg-slate-100 text-slate-600 border border-slate-200{{/if}}">
+                      {{this.role}}
+                    </span>
+                  </td>
+                  <td class="px-5 py-3.5">
+                    {{#if this.isActive}}
+                      <span class="inline-flex items-center text-xs font-medium text-emerald-700">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span> Active
+                      </span>
+                    {{else}}
+                      <span class="inline-flex items-center text-xs font-medium text-red-700">
+                        <span class="w-2 h-2 rounded-full bg-red-500 mr-1.5"></span> Disabled
+                      </span>
+                    {{/if}}
+                  </td>
+                  <td class="px-5 py-3.5 text-slate-500 whitespace-nowrap">{{formatDate this.createdAt}}</td>
+                  <td class="px-5 py-3.5 text-right space-x-1 whitespace-nowrap">
+                    <a href="/user/edit/{{this.id}}" class="inline-block px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-medium transition">
+                      Edit Role
+                    </a>
+                    {{#if (ne this.id ../user.id)}}
+                      <form method="POST" action="/user/delete/{{this.id}}" style="display:inline;" onsubmit="return confirm('Permanently remove user account for {{this.name}}?')">
+                        <button type="submit" class="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-medium transition">
+                          Delete
+                        </button>
+                      </form>
+                    {{/if}}
+                  </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+    {{> footer}}
+  </div>

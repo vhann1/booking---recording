@@ -1,0 +1,246 @@
+{{> head}}
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+  {{> sidebar}}
+
+  <div class="md:pl-64 flex-1 flex flex-col min-w-0">
+    {{> topbar}}
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+      
+      <!-- Page Header & Export Action Bar -->
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-2 border-b border-slate-200">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Facility Reports &amp; Analytics</h1>
+          <p class="text-slate-500 text-sm mt-0.5">Comprehensive attendance logs, duty shift coverage, and departmental personnel records</p>
+        </div>
+
+        <!-- Export Buttons Group -->
+        <div class="flex flex-wrap items-center gap-2.5 print:hidden">
+          <!-- Excel Attendance Export -->
+          <a href="/reports/export/excel?startDate={{startDate}}&endDate={{endDate}}&department={{department}}" 
+             class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs shadow-sm transition"
+             title="Download filtered attendance log formatted in Microsoft Excel">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <span>Download Excel (.xls)</span>
+          </a>
+
+          <!-- CSV Attendance Export -->
+          <a href="/reports/export/csv?startDate={{startDate}}&endDate={{endDate}}&department={{department}}" 
+             class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-medium text-xs border border-slate-300 shadow-sm transition"
+             title="Download raw attendance CSV file">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            <span>Download CSV</span>
+          </a>
+
+          <!-- Roster Excel Export -->
+          <a href="/reports/export/roster-excel" 
+             class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs shadow-sm transition"
+             title="Download complete personnel roster in Microsoft Excel">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <span>Export Roster Excel</span>
+          </a>
+
+          <!-- Print / PDF -->
+          <button onclick="window.print()" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-medium text-xs border border-slate-300 shadow-sm transition">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+            </svg>
+            <span>Print</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Controls (Hidden in Print) -->
+      <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm print:hidden">
+        <form method="GET" action="/reports" class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">From Date</label>
+            <input type="date" name="startDate" value="{{startDate}}" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">To Date</label>
+            <input type="date" name="endDate" value="{{endDate}}" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Department</label>
+            <select name="department" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition">
+              <option value="">All Departments</option>
+              {{#each departments}}
+                <option value="{{this}}" {{#if (eq this ../department)}}selected{{/if}}>{{this}}</option>
+              {{/each}}
+            </select>
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold shadow-sm transition">
+              Filter Records
+            </button>
+            <a href="/reports" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold transition flex items-center justify-center" title="Reset Filters">
+              ↺
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Muster Rollcall Summary KPI Cards -->
+      <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 mb-5 border-b border-slate-200 gap-2">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Attendance Summary ({{formatDate startDate}} to {{formatDate endDate}})</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Total recorded rollcall entries: {{attendanceStats.total}}</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-full font-medium bg-slate-100 text-slate-700 border border-slate-200">
+            Filtered Dataset
+          </span>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5 mb-6">
+          <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Present</div>
+            <div class="text-2xl font-bold text-emerald-600 mt-1">{{attendanceStats.present}}</div>
+          </div>
+          <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Late</div>
+            <div class="text-2xl font-bold text-amber-600 mt-1">{{attendanceStats.late}}</div>
+          </div>
+          <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Absent</div>
+            <div class="text-2xl font-bold text-red-600 mt-1">{{attendanceStats.absent}}</div>
+          </div>
+          <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Early Leave</div>
+            <div class="text-2xl font-bold text-orange-600 mt-1">{{attendanceStats.earlyLeave}}</div>
+          </div>
+          <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 text-center">
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Official Leave</div>
+            <div class="text-2xl font-bold text-blue-600 mt-1">{{attendanceStats.holiday}}</div>
+          </div>
+        </div>
+
+        <!-- Attendance Detail Table -->
+        {{#if attendanceRecords.length}}
+          <div class="overflow-x-auto border border-slate-200 rounded-lg">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 text-xs font-semibold text-slate-700 uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">Date</th>
+                  <th class="px-4 py-3">Officer</th>
+                  <th class="px-4 py-3">Department</th>
+                  <th class="px-4 py-3">Status</th>
+                  <th class="px-4 py-3">Time In / Out</th>
+                  <th class="px-4 py-3">Remarks</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-xs">
+                {{#each attendanceRecords}}
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-4 py-3 text-slate-700 font-semibold whitespace-nowrap">{{formatDate this.date}}</td>
+                    <td class="px-4 py-3">
+                      <div class="text-slate-900 font-medium">{{this.Personnel.firstName}} {{this.Personnel.lastName}}</div>
+                      <div class="text-slate-400 text-[11px]">{{this.Personnel.employeeId}} • {{this.Personnel.designation}}</div>
+                    </td>
+                    <td class="px-4 py-3 text-slate-600">{{this.Personnel.department}}</td>
+                    <td class="px-4 py-3">
+                      <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium uppercase
+                        {{#if (eq this.status 'present')}}bg-emerald-50 text-emerald-700 border border-emerald-200
+                        {{else if (eq this.status 'late')}}bg-amber-50 text-amber-700 border border-amber-200
+                        {{else if (eq this.status 'absent')}}bg-red-50 text-red-700 border border-red-200
+                        {{else}}bg-slate-100 text-slate-700 border border-slate-200{{/if}}">
+                        {{this.status}}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-slate-700 whitespace-nowrap font-mono text-[11px]">
+                      {{#if this.checkIn}}{{this.checkIn}}{{else}}--{{/if}} / {{#if this.checkOut}}{{this.checkOut}}{{else}}--{{/if}}
+                    </td>
+                    <td class="px-4 py-3 text-slate-500 max-w-xs truncate">{{#if this.remarks}}{{this.remarks}}{{else}}--{{/if}}</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        {{else}}
+          <div class="text-center py-10 bg-slate-50 rounded-lg border border-dashed border-slate-300">
+            <svg class="mx-auto h-8 w-8 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <p class="text-slate-600 text-sm font-medium">No attendance records found</p>
+            <p class="text-slate-400 text-xs mt-1">Try expanding your date range or selecting a different department</p>
+          </div>
+        {{/if}}
+      </div>
+
+      <!-- Department Distribution & Shift Coverage -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Dept Roster Card -->
+        <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">
+              Department Personnel Distribution
+            </h3>
+            <span class="text-xs text-slate-500 font-medium">Staffing Count</span>
+          </div>
+          <table class="w-full text-left text-xs">
+            <thead class="text-slate-500 border-b border-slate-200 uppercase font-semibold">
+              <tr>
+                <th class="py-2.5 px-3">Department</th>
+                <th class="py-2.5 px-3 text-center">Active</th>
+                <th class="py-2.5 px-3 text-center">Inactive</th>
+                <th class="py-2.5 px-3 text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {{#each departmentStats}}
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="py-3 px-3 font-medium text-slate-800">{{this.name}}</td>
+                  <td class="py-3 px-3 text-center text-emerald-600 font-bold">{{this.active}}</td>
+                  <td class="py-3 px-3 text-center text-slate-400">{{this.inactive}}</td>
+                  <td class="py-3 px-3 text-right text-blue-600 font-bold">{{this.total}}</td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Shift Guard Coverage -->
+        <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">
+              Duty Shift Coverage
+            </h3>
+            <span class="text-xs text-slate-500 font-medium">Active Posts</span>
+          </div>
+          <div class="space-y-3">
+            {{#each shiftCoverage}}
+              <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 hover:border-blue-400 transition">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-semibold text-slate-800 text-sm">{{this.name}}</span>
+                  <span class="text-xs px-2 py-0.5 rounded-full font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                    {{this.activeOfficersCount}} Assigned
+                  </span>
+                </div>
+                <div class="text-xs text-slate-500 mb-2 font-mono">Hours: {{this.time}}</div>
+                {{#if this.officers.length}}
+                  <div class="text-xs text-slate-600">
+                    <strong class="text-slate-700 font-medium">Assigned Officers:</strong> {{this.officers}}
+                  </div>
+                {{else}}
+                  <div class="text-xs text-amber-600 font-medium">No officers currently assigned to this shift</div>
+                {{/if}}
+              </div>
+            {{/each}}
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+    {{> footer}}
+  </div>

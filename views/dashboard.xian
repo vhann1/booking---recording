@@ -1,0 +1,358 @@
+{{> head}}
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+  {{> sidebar}}
+
+  <div class="md:pl-64 flex-1 flex flex-col min-w-0">
+    {{> topbar}}
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+      
+      <!-- Flash Alert Messages -->
+      {{#if success_msg}}
+        <div class="flex items-center space-x-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 shadow-sm">
+          <svg class="w-5 h-5 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="text-sm font-medium">{{success_msg}}</span>
+        </div>
+      {{/if}}
+
+      {{#if error_msg}}
+        <div class="flex items-center space-x-3 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 shadow-sm">
+          <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          <span class="text-sm font-medium">{{error_msg}}</span>
+        </div>
+      {{/if}}
+
+      <!-- Hero / Welcome Command Banner (Blended Royal Blue) -->
+      <div class="rounded-xl p-6 sm:p-7 bg-gradient-to-r from-blue-950 via-blue-800 to-sky-700 text-white shadow-md">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+          <div class="space-y-1">
+            <div class="inline-flex items-center space-x-2 px-2.5 py-0.5 rounded-full bg-white/15 border border-white/25 text-sky-100 text-xs font-semibold">
+              <span>Facility Booking &amp; Operations Dashboard</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">
+              Welcome back, {{user.name}}
+            </h1>
+            <p class="text-sm text-blue-100 max-w-2xl">
+              Manage facility bookings, detainee intake, visitations, duty shift rosters, and daily rollcall attendance in one unified system.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5">
+            <a href="/booking/create" class="px-4 py-2 rounded-lg bg-white text-blue-900 hover:bg-blue-50 font-semibold text-sm shadow-sm transition flex items-center space-x-2">
+              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <span>New Booking</span>
+            </a>
+            <a href="/attendance/mark" class="px-4 py-2 rounded-lg bg-sky-500/30 hover:bg-sky-500/40 text-white border border-sky-300/40 font-medium text-sm shadow-sm transition flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>Record Muster</span>
+            </a>
+            <a href="/reports" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-white border border-white/30 font-medium text-sm shadow-sm transition flex items-center space-x-2">
+              <svg class="w-4 h-4 text-sky-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <span>Excel Reports</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {{#if (or (eq user.role 'admin') (eq user.role 'staff'))}}
+        <!-- KPI Metrics Grid (6 Cards) -->
+        <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
+          
+          <!-- Metric 1: Facility Bookings -->
+          <div class="bg-white rounded-xl p-5 border border-blue-200 shadow-sm hover:border-blue-400 transition">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-blue-700">Bookings</span>
+              <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="text-3xl font-bold text-blue-900">{{stats.totalBookings}}</div>
+            <div class="mt-2 flex items-center justify-between text-xs">
+              <span class="text-sky-700 font-medium">{{stats.activeBookings}} Active</span>
+              <a href="/booking" class="text-blue-600 hover:text-blue-800 font-semibold">Manage →</a>
+            </div>
+          </div>
+
+          <!-- Metric 2: Total Officers -->
+          <div class="bg-white rounded-xl p-5 border border-blue-200 shadow-sm hover:border-blue-400 transition">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Personnel</span>
+              <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="text-3xl font-bold text-slate-900">{{stats.totalPersonnel}}</div>
+            <div class="mt-2 flex items-center justify-between text-xs">
+              <span class="text-emerald-700 font-medium">{{stats.activePersonnel}} Active</span>
+              <a href="/personnel" class="text-blue-600 hover:text-blue-700 font-medium">Directory →</a>
+            </div>
+          </div>
+
+          <!-- Metric 3: Active Deployments -->
+          <div class="bg-white rounded-xl p-5 border border-blue-200 shadow-sm hover:border-blue-400 transition">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Deployments</span>
+              <div class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="text-3xl font-bold text-slate-900">{{stats.totalAssignments}}</div>
+            <div class="mt-2 flex items-center justify-between text-xs">
+              <span class="text-slate-500 font-medium">Duty posts</span>
+              <a href="/assignment" class="text-blue-600 hover:text-blue-700 font-medium">Roster →</a>
+            </div>
+          </div>
+
+          <!-- Metric 4: Today's Rollcall -->
+          <div class="bg-white rounded-xl p-5 border border-blue-200 shadow-sm hover:border-blue-400 transition">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Today's Muster</span>
+              <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="text-3xl font-bold text-slate-900">{{stats.attendance.marked}}</div>
+            <div class="mt-2 flex items-center justify-between text-xs">
+              <span class="text-slate-600">
+                <strong class="text-emerald-600">{{stats.attendance.present}}P</strong> / 
+                <strong class="text-amber-600">{{stats.attendance.late}}L</strong> / 
+                <strong class="text-red-600">{{stats.attendance.absent}}A</strong>
+              </span>
+              <a href="/attendance" class="text-blue-600 hover:text-blue-700 font-medium">Logs →</a>
+            </div>
+          </div>
+
+          <!-- Metric 5: Documents -->
+          <div class="bg-white rounded-xl p-5 border border-blue-200 shadow-sm hover:border-blue-400 transition">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Documents</span>
+              <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="text-3xl font-bold text-slate-900">{{stats.totalDocuments}}</div>
+            <div class="mt-2 flex items-center justify-between text-xs">
+              <span class="text-slate-500 font-medium">Filed records</span>
+              <a href="/document" class="text-blue-600 hover:text-blue-700 font-medium">Vault →</a>
+            </div>
+          </div>
+
+          <!-- Metric 6: Shifts -->
+          <div class="bg-white rounded-xl p-5 border border-blue-200 shadow-sm hover:border-blue-400 transition">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Duty Shifts</span>
+              <div class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="text-3xl font-bold text-slate-900">{{stats.totalShifts}}</div>
+            <div class="mt-2 flex items-center justify-between text-xs">
+              <span class="text-slate-500 font-medium">Defined shifts</span>
+              <a href="/shift" class="text-blue-600 hover:text-blue-700 font-medium">Manage →</a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Quick Operations Hub -->
+        <div class="bg-white rounded-xl p-5 border border-blue-200 shadow-sm">
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-blue-100">
+            <h2 class="text-sm font-bold text-blue-950 uppercase tracking-wide">Quick Operations &amp; Booking Hub</h2>
+            <span class="text-xs text-blue-600 font-medium">Direct Action Shortcuts</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <a href="/booking/create" class="flex flex-col items-center p-3 rounded-lg border border-blue-200 bg-blue-50/40 hover:border-blue-500 hover:bg-blue-50 transition group text-center">
+              <div class="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-xs">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-blue-900">New Booking</span>
+            </a>
+
+            <a href="/personnel/create" class="flex flex-col items-center p-3 rounded-lg border border-blue-200 hover:border-blue-500 hover:bg-blue-50/40 transition group text-center">
+              <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-800">Add Officer</span>
+            </a>
+
+            <a href="/assignment/create" class="flex flex-col items-center p-3 rounded-lg border border-blue-200 hover:border-blue-500 hover:bg-blue-50/40 transition group text-center">
+              <div class="w-9 h-9 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-800">Assign Shift</span>
+            </a>
+
+            <a href="/attendance/mark" class="flex flex-col items-center p-3 rounded-lg border border-blue-200 hover:border-blue-500 hover:bg-blue-50/40 transition group text-center">
+              <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-800">Record Muster</span>
+            </a>
+
+            <a href="/document/upload" class="flex flex-col items-center p-3 rounded-lg border border-blue-200 hover:border-blue-500 hover:bg-blue-50/40 transition group text-center">
+              <div class="w-9 h-9 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-800">Upload Doc</span>
+            </a>
+
+            <a href="/reports" class="flex flex-col items-center p-3 rounded-lg border border-blue-200 hover:border-blue-500 hover:bg-blue-50/40 transition group text-center">
+              <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-800">Excel Reports</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Two Column Section: Recent Facility Bookings & Active Shift Deployments -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Column A: Recent Facility Bookings -->
+          <div class="bg-white rounded-xl p-5 border border-blue-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-blue-100">
+                <h3 class="text-sm font-bold text-blue-950 uppercase tracking-wide">Recent Facility Bookings</h3>
+                <a href="/booking" class="text-xs font-semibold text-blue-600 hover:text-blue-800">All Bookings →</a>
+              </div>
+
+              {{#if recentBookings.length}}
+                <div class="space-y-2.5">
+                  {{#each recentBookings}}
+                    <div class="p-3 rounded-lg bg-blue-50/50 border border-blue-200 flex items-center justify-between">
+                      <div>
+                        <div class="flex items-center space-x-2">
+                          <a href="/booking/view/{{this.id}}" class="text-xs font-mono font-bold text-blue-700 hover:underline">
+                            {{this.bookingNumber}}
+                          </a>
+                          <span class="text-sm font-semibold text-slate-900">{{this.subjectName}}</span>
+                        </div>
+                        <div class="text-xs text-slate-500 mt-0.5">
+                          {{this.bookingType}} • {{this.facilityZone}} ({{formatDate this.bookingDate}} {{this.startTime}})
+                        </div>
+                      </div>
+
+                      <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase
+                        {{#if (eq this.status 'completed')}}bg-emerald-50 text-emerald-700 border border-emerald-200
+                        {{else if (eq this.status 'checked_in')}}bg-sky-100 text-sky-800 border border-sky-300
+                        {{else if (eq this.status 'approved')}}bg-blue-50 text-blue-700 border border-blue-200
+                        {{else if (eq this.status 'pending')}}bg-amber-50 text-amber-700 border border-amber-200
+                        {{else}}bg-red-50 text-red-700 border border-red-200{{/if}}">
+                        {{this.status}}
+                      </span>
+                    </div>
+                  {{/each}}
+                </div>
+              {{else}}
+                <div class="py-10 text-center text-slate-400 text-xs">
+                  No facility bookings registered yet.
+                </div>
+              {{/if}}
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-blue-100 flex items-center justify-between text-xs text-slate-500">
+              <span>Booking &amp; Intake Control</span>
+              <a href="/booking/create" class="text-blue-600 hover:text-blue-800 font-semibold">+ Create Booking</a>
+            </div>
+          </div>
+
+          <!-- Column B: Active Shift Deployments -->
+          <div class="bg-white rounded-xl p-5 border border-blue-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-blue-100">
+                <h3 class="text-sm font-bold text-blue-950 uppercase tracking-wide">Active Shift Deployments</h3>
+                <a href="/assignment" class="text-xs font-semibold text-blue-600 hover:text-blue-800">View Roster →</a>
+              </div>
+
+              {{#if activeDeployments.length}}
+                <div class="space-y-2.5">
+                  {{#each activeDeployments}}
+                    <div class="p-3 rounded-lg bg-blue-50/50 border border-blue-200 flex items-center justify-between">
+                      <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                          {{this.Personnel.firstName.[0]}}{{this.Personnel.lastName.[0]}}
+                        </div>
+                        <div>
+                          <a href="/personnel/view/{{this.Personnel.id}}" class="text-sm font-semibold text-slate-900 hover:text-blue-600 transition">
+                            {{this.Personnel.firstName}} {{this.Personnel.lastName}}
+                          </a>
+                          <div class="text-xs text-slate-500">
+                            {{this.Personnel.employeeId}} • {{this.department}}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="text-right">
+                        <div class="text-xs font-semibold text-blue-700">{{this.Shift.name}}</div>
+                        <div class="text-[11px] text-slate-500 font-mono">{{this.Shift.startTime}} - {{this.Shift.endTime}}</div>
+                      </div>
+                    </div>
+                  {{/each}}
+                </div>
+              {{else}}
+                <div class="py-10 text-center text-slate-400 text-xs">
+                  No active deployments currently registered.
+                </div>
+              {{/if}}
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-blue-100 flex items-center justify-between text-xs text-slate-500">
+              <span>Facility Guard Coverage</span>
+              <a href="/assignment/create" class="text-blue-600 hover:text-blue-800 font-semibold">+ Assign Officer</a>
+            </div>
+          </div>
+
+        </div>
+
+      {{else}}
+        <!-- Restricted Viewer Notice -->
+        <div class="bg-white rounded-xl p-8 border border-blue-200 text-center max-w-xl mx-auto space-y-3 shadow-sm">
+          <div class="w-12 h-12 mx-auto rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+            ℹ️
+          </div>
+          <h2 class="text-lg font-bold text-slate-900">Standard Access Account</h2>
+          <p class="text-sm text-slate-600">
+            Your login currently has read-only or visitor clearance. Operational access to manage personnel, bookings, or duty shifts requires elevated permissions from an administrator.
+          </p>
+        </div>
+      {{/if}}
+
+    </main>
+
+    {{> footer}}
+  </div>

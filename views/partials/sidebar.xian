@@ -1,0 +1,253 @@
+<!-- Mobile Header Bar (Visible on mobile/tablet) -->
+<header class="md:hidden flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-950 via-blue-900 to-blue-800 border-b border-blue-700/80 sticky top-0 z-50 shadow-md">
+  <div class="flex items-center space-x-3">
+    <button type="button" id="mobileSidebarToggle" class="p-2 rounded-lg bg-blue-800/80 text-blue-100 hover:bg-blue-700 focus:outline-none border border-blue-600/60 transition" aria-label="Toggle Navigation">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+    <a href="/dashboard" class="flex items-center space-x-2.5">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-500 to-sky-400 flex items-center justify-center text-white font-bold shadow-sm">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+        </svg>
+      </div>
+      <div>
+        <span class="font-bold text-white text-base tracking-tight">JailPersonnel</span>
+      </div>
+    </a>
+  </div>
+
+  {{#if user}}
+    <div class="flex items-center space-x-2">
+      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-blue-800 text-sky-200 border border-blue-600 uppercase">
+        {{user.role}}
+      </span>
+      <a href="/logout" class="p-1.5 rounded-lg bg-red-500/20 text-red-200 hover:bg-red-500/30 text-xs border border-red-400/40 font-medium">
+        Logout
+      </a>
+    </div>
+  {{/if}}
+</header>
+
+<!-- Mobile Sidebar Backdrop Overlay -->
+<div id="mobileSidebarBackdrop" class="fixed inset-0 bg-blue-950/60 backdrop-blur-xs z-40 hidden md:hidden transition-opacity"></div>
+
+<!-- Desktop & Mobile Side Tabs Navigation (Sidebar) -->
+<aside id="mainSidebar" class="fixed top-0 bottom-0 left-0 w-64 bg-gradient-to-b from-blue-950 via-blue-900 to-indigo-950 border-r border-blue-800/80 z-50 flex flex-col justify-between transition-transform duration-200 transform -translate-x-full md:translate-x-0 shadow-xl">
+  
+  <!-- Sidebar Header / Branding -->
+  <div class="p-5 border-b border-blue-800/70 bg-blue-950/50">
+    <div class="flex items-center justify-between">
+      <a href="/dashboard" class="flex items-center space-x-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center text-white shadow-md shadow-blue-950/50 group-hover:from-blue-500 group-hover:to-sky-300 transition-all">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+          </svg>
+        </div>
+        <div>
+          <span class="font-bold text-white text-base tracking-tight block">JailPersonnel</span>
+          <span class="text-[11px] font-medium text-sky-300/90 block tracking-normal">Booking &amp; Operations</span>
+        </div>
+      </a>
+
+      <!-- Close Mobile Sidebar Button -->
+      <button type="button" id="closeMobileSidebar" class="md:hidden p-1.5 rounded-lg text-blue-300 hover:text-white hover:bg-blue-800">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Side Navigation Links (Scrollable) -->
+  <div class="flex-1 overflow-y-auto px-3.5 py-4 space-y-5">
+    
+    <!-- Group: Core Operations & Booking -->
+    <div>
+      <div class="px-3 mb-1.5 text-[10px] font-semibold tracking-wider text-sky-300/80 uppercase">
+        Core &amp; Booking
+      </div>
+      <nav class="space-y-1">
+        <a href="/dashboard" data-nav="/dashboard" class="side-tab-link flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition text-blue-100 hover:text-white hover:bg-blue-800/60">
+          <svg class="w-4 h-4 mr-3 text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+          <span class="flex-1">Dashboard</span>
+        </a>
+        <a href="/booking" data-nav="/booking" class="side-tab-link flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition text-blue-100 hover:text-white hover:bg-blue-800/60">
+          <svg class="w-4 h-4 mr-3 text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <span class="flex-1">Facility Bookings</span>
+          <span class="text-[10px] bg-sky-400/20 text-sky-200 border border-sky-400/30 px-1.5 py-0.5 rounded font-semibold">Booking</span>
+        </a>
+        <a href="/reports" data-nav="/reports" class="side-tab-link flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition text-blue-100 hover:text-white hover:bg-blue-800/60">
+          <svg class="w-4 h-4 mr-3 text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+          <span class="flex-1">Reports &amp; Analytics</span>
+          <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-1.5 py-0.5 rounded font-medium">Excel</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Group: Personnel Management -->
+    <div>
+      <div class="px-3 mb-1.5 text-[10px] font-semibold tracking-wider text-sky-300/80 uppercase">
+        Personnel &amp; Roster
+      </div>
+      <nav class="space-y-1">
+        <a href="/personnel" data-nav="/personnel" class="side-tab-link flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition text-blue-100 hover:text-white hover:bg-blue-800/60">
+          <svg class="w-4 h-4 mr-3 text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+          <span class="flex-1">Personnel Directory</span>
+        </a>
+        <a href="/assignment" data-nav="/assignment" class="side-tab-link flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition text-blue-100 hover:text-white hover:bg-blue-800/60">
+          <svg class="w-4 h-4 mr-3 text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+          </svg>
+          <span class="flex-1">Shift Assignments</span>
+        </a>
+        <a href="/attendance" data-nav="/attendance" class="side-tab-link flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition text-blue-100 hover:text-white hover:bg-blue-800/60">
+          <svg class="w-4 h-4 mr-3 text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="flex-1">Muster Attendance</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Group: Facility & Shifts -->
+    <div>
+      <div class="px-3 mb-1.5 text-[10px] font-semibold tracking-wider text-sky-300/80 uppercase">
+        Facility Control
+      </div>
+      <nav class="space-y-1">
+        <a href="/document" data-nav="/document" class="side-tab-link flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition text-blue-100 hover:text-white hover:bg-blue-800/60">
+          <svg class="w-4 h-4 mr-3 text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
+          <span class="flex-1">Compliance Documents</span>
+        </a>
+        <a href="/shift" data-nav="/shift" class="side-tab-link flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition text-blue-100 hover:text-white hover:bg-blue-800/60">
+          <svg class="w-4 h-4 mr-3 text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="flex-1">Duty Shifts</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Group: Administration -->
+    {{#if (eq user.role 'admin')}}
+      <div>
+        <div class="px-3 mb-1.5 text-[10px] font-semibold tracking-wider text-sky-300/80 uppercase">
+          Administration
+        </div>
+        <nav class="space-y-1">
+          <a href="/user" data-nav="/user" class="side-tab-link flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition text-blue-100 hover:text-white hover:bg-blue-800/60">
+            <svg class="w-4 h-4 mr-3 text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <span class="flex-1">User Accounts</span>
+          </a>
+          <a href="/audit-logs" data-nav="/audit-logs" class="side-tab-link flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition text-blue-100 hover:text-white hover:bg-blue-800/60">
+            <svg class="w-4 h-4 mr-3 text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <span class="flex-1">Audit Logs</span>
+          </a>
+        </nav>
+      </div>
+    {{/if}}
+
+  </div>
+
+  <!-- Sidebar Footer / Operator Profile Card -->
+  <div class="p-3.5 border-t border-blue-800/70 bg-blue-950/80">
+    {{#if user}}
+      <div class="p-2.5 rounded-xl bg-blue-900/70 border border-blue-700/60">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2.5 overflow-hidden">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-500 to-sky-400 flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-sm">
+              {{user.name.[0]}}
+            </div>
+            <div class="overflow-hidden">
+              <div class="text-xs font-semibold text-white truncate">{{user.name}}</div>
+              <div class="text-[10px] font-medium text-sky-300 uppercase tracking-wide">
+                {{user.role}}
+              </div>
+            </div>
+          </div>
+          <a href="/logout" title="Sign out" class="p-1.5 rounded-md text-blue-200 hover:text-red-300 hover:bg-blue-800 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    {{else}}
+      <div class="space-y-1.5">
+        <a href="/login" class="block w-full py-2 px-3 text-center rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs transition">
+          Sign In
+        </a>
+      </div>
+    {{/if}}
+  </div>
+</aside>
+
+<!-- Side Tabs Activation Script & Mobile Drawer Handling -->
+<script>
+  (function() {
+    // 1. Highlight Active Side Tab
+    const currentPath = window.location.pathname;
+    const tabLinks = document.querySelectorAll('.side-tab-link');
+    
+    tabLinks.forEach(link => {
+      const target = link.getAttribute('data-nav');
+      if (
+        (target === '/dashboard' && (currentPath === '/dashboard' || currentPath === '/')) ||
+        (target !== '/dashboard' && currentPath.startsWith(target))
+      ) {
+        link.classList.remove('text-blue-100', 'hover:bg-blue-800/60');
+        link.classList.add(
+          'bg-gradient-to-r',
+          'from-blue-600',
+          'to-sky-500',
+          'text-white',
+          'font-semibold',
+          'shadow-md',
+          'shadow-blue-950/40'
+        );
+        const svg = link.querySelector('svg');
+        if (svg) {
+          svg.classList.remove('text-sky-300');
+          svg.classList.add('text-white');
+        }
+      }
+    });
+
+    // 2. Mobile Drawer Toggle
+    const toggleBtn = document.getElementById('mobileSidebarToggle');
+    const closeBtn = document.getElementById('closeMobileSidebar');
+    const sidebar = document.getElementById('mainSidebar');
+    const backdrop = document.getElementById('mobileSidebarBackdrop');
+
+    function openSidebar() {
+      if (sidebar) sidebar.classList.remove('-translate-x-full');
+      if (backdrop) backdrop.classList.remove('hidden');
+    }
+
+    function closeSidebar() {
+      if (sidebar) sidebar.classList.add('-translate-x-full');
+      if (backdrop) backdrop.classList.add('hidden');
+    }
+
+    if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
+    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+    if (backdrop) backdrop.addEventListener('click', closeSidebar);
+  })();
+</script>

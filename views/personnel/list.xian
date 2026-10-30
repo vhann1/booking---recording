@@ -1,0 +1,207 @@
+{{> head}}
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+  {{> sidebar}}
+
+  <div class="md:pl-64 flex-1 flex flex-col min-w-0">
+    {{> topbar}}
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+      
+      <!-- Notifications -->
+      {{#if success_msg}}
+        <div class="flex items-center space-x-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 shadow-sm">
+          <svg class="w-5 h-5 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="text-sm font-medium">{{success_msg}}</span>
+        </div>
+      {{/if}}
+
+      {{#if error_msg}}
+        <div class="flex items-center space-x-3 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 shadow-sm">
+          <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          <span class="text-sm font-medium">{{error_msg}}</span>
+        </div>
+      {{/if}}
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-2 border-b border-slate-200">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Personnel Directory</h1>
+          <p class="text-slate-500 text-sm mt-0.5">Correctional officers, wardens, medical personnel, and administrative staff</p>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+          <a href="/reports/export/roster-excel" class="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs shadow-sm transition flex items-center space-x-1.5" title="Export entire roster to Microsoft Excel">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <span>Export Roster (.xls)</span>
+          </a>
+          <a href="/personnel/create" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs shadow-sm transition flex items-center space-x-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            <span>Add New Personnel</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Filter & Search Bar -->
+      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+        <form method="GET" action="/personnel" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div class="md:col-span-2 relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </span>
+            <input type="text" name="search" value="{{filters.search}}" placeholder="Search by name, employee ID, or title..." class="w-full pl-9 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition" />
+          </div>
+
+          <div>
+            <select name="department" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition">
+              <option value="">All Departments</option>
+              {{#each departments}}
+                <option value="{{this}}" {{#if (eq this ../filters.department)}}selected{{/if}}>{{this}}</option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div class="flex gap-2">
+            <select name="status" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition">
+              <option value="">All Statuses</option>
+              <option value="active" {{#if (eq filters.status 'active')}}selected{{/if}}>Active</option>
+              <option value="inactive" {{#if (eq filters.status 'inactive')}}selected{{/if}}>Inactive</option>
+              <option value="suspended" {{#if (eq filters.status 'suspended')}}selected{{/if}}>Suspended</option>
+            </select>
+            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold shadow-sm transition">
+              Filter
+            </button>
+            <a href="/personnel" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold transition flex items-center justify-center" title="Reset Filters">
+              ↺
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Main Personnel Table Card -->
+      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+        {{#if personnel.length}}
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                <tr>
+                  <th class="px-5 py-3">Employee ID</th>
+                  <th class="px-5 py-3">Officer Name</th>
+                  <th class="px-5 py-3">Designation</th>
+                  <th class="px-5 py-3">Department</th>
+                  <th class="px-5 py-3">Date Joined</th>
+                  <th class="px-5 py-3">Status</th>
+                  <th class="px-5 py-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-xs">
+                {{#each personnel}}
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-5 py-3.5 font-mono font-semibold text-blue-700 whitespace-nowrap">{{this.employeeId}}</td>
+                    <td class="px-5 py-3.5">
+                      <a href="/personnel/view/{{this.id}}" class="font-semibold text-slate-900 hover:text-blue-600 transition block">
+                        {{this.firstName}} {{this.lastName}}
+                      </a>
+                      <div class="text-[11px] text-slate-400 font-mono">{{this.email}}</div>
+                    </td>
+                    <td class="px-5 py-3.5 text-slate-700 font-medium">{{this.designation}}</td>
+                    <td class="px-5 py-3.5">
+                      <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                        {{this.department}}
+                      </span>
+                    </td>
+                    <td class="px-5 py-3.5 text-slate-500 whitespace-nowrap">{{formatDate this.dateOfJoining}}</td>
+                    <td class="px-5 py-3.5">
+                      <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium uppercase
+                        {{#if (eq this.status 'active')}}bg-emerald-50 text-emerald-700 border border-emerald-200
+                        {{else if (eq this.status 'inactive')}}bg-slate-100 text-slate-600 border border-slate-200
+                        {{else}}bg-red-50 text-red-700 border border-red-200{{/if}}">
+                        {{this.status}}
+                      </span>
+                    </td>
+                    <td class="px-5 py-3.5 text-right space-x-1 whitespace-nowrap">
+                      <a href="/personnel/view/{{this.id}}" class="inline-block px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-blue-700 border border-slate-200 text-xs font-medium transition">
+                        Profile
+                      </a>
+                      <a href="/personnel/edit/{{this.id}}" class="inline-block px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-medium transition">
+                        Edit
+                      </a>
+                      <form method="POST" action="/personnel/delete/{{this.id}}" style="display:inline;" onsubmit="return confirm('Permanently remove {{this.firstName}} {{this.lastName}} from the records?')">
+                        <button type="submit" class="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-medium transition">
+                          Delete
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div class="flex items-center justify-between px-5 py-3 bg-slate-50 border-t border-slate-200 text-xs text-slate-600">
+            <span>Showing page {{currentPage}} of {{totalPages}}</span>
+            <div class="flex space-x-2">
+              {{#if (gt currentPage 1)}}
+                <a href="/personnel?page={{subtract currentPage 1}}" class="px-3 py-1 rounded bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 shadow-xs transition">
+                  ← Previous
+                </a>
+              {{/if}}
+              {{#if (lt currentPage totalPages)}}
+                <a href="/personnel?page={{add currentPage 1}}" class="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-xs transition">
+                  Next →
+                </a>
+              {{/if}}
+            </div>
+          </div>
+        {{else}}
+          <div class="p-12 text-center text-slate-500 space-y-2">
+            <svg class="mx-auto h-8 w-8 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+            <p class="text-sm font-semibold text-slate-700">No personnel records found</p>
+            <p class="text-xs text-slate-400">Try adjusting your search terms or filters</p>
+          </div>
+        {{/if}}
+      </div>
+
+      <!-- Quick Roster Stats -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm text-center">
+          <div class="text-xs font-semibold uppercase text-slate-500">Total Personnel</div>
+          <div class="text-2xl font-bold text-slate-900 mt-1" id="totalPersonnel">-</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm text-center">
+          <div class="text-xs font-semibold uppercase text-slate-500">Active Officers</div>
+          <div class="text-2xl font-bold text-emerald-600 mt-1" id="activePersonnel">-</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm text-center">
+          <div class="text-xs font-semibold uppercase text-slate-500">Inactive / Off-Duty</div>
+          <div class="text-2xl font-bold text-slate-500 mt-1" id="inactivePersonnel">-</div>
+        </div>
+      </div>
+
+    </main>
+
+    {{> footer}}
+  </div>
+
+  <script>
+    fetch('/personnel/stats')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('totalPersonnel').textContent = data.total || 0;
+        document.getElementById('activePersonnel').textContent = data.active || 0;
+        document.getElementById('inactivePersonnel').textContent = data.inactive || 0;
+      })
+      .catch(err => console.error(err));
+  </script>

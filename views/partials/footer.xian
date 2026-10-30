@@ -1,0 +1,16 @@
+<footer class="mt-auto py-4 px-6 border-t border-blue-200/80 bg-gradient-to-r from-white via-blue-50/40 to-sky-50/50 text-xs text-blue-800/80">
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div class="flex items-center space-x-2">
+      <div class="w-2 h-2 rounded-full bg-blue-600"></div>
+      <span class="font-semibold text-blue-950">Jail Personnel &amp; Booking Management System</span>
+      <span class="text-blue-300">|</span>
+      <span>Facility Operations &amp; Duty Roster</span>
+    </div>
+
+    <div class="text-blue-600/80">
+      &copy; 2026 Mindoro State University • XianFire Framework
+    </div>
+  </div>
+</footer>
+</body>
+</html>
