@@ -198,7 +198,7 @@ export default app;
 export const startServer = (port = PORT) => {
   return new Promise((resolve, reject) => {
     const server = app.listen(port, () => {
-      console.log(`🔥 XianFire JailPersonnel running at http://localhost:${port}`);
+      console.log(`🔥 XianFire JailPersonnel & Booking System running at http://localhost:${port}`);
       resolve(server);
     });
     server.on("error", reject);

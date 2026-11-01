@@ -1,92 +1,222 @@
 {{> head}}
-<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-center items-center p-4">
-  
-  <div class="w-full max-w-md">
-    
-    <!-- Branding Header -->
-    <div class="text-center mb-6">
-      <a href="/" class="inline-flex items-center space-x-2.5">
-        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-          </svg>
-        </div>
-        <div class="text-left">
-          <span class="font-bold text-xl text-slate-900 tracking-tight block">JailPersonnel</span>
-          <span class="text-xs text-slate-500 block">Corrections Management System</span>
-        </div>
-      </a>
-      <h2 class="mt-4 text-xl font-bold text-slate-900">Sign in to your account</h2>
-      <p class="text-xs text-slate-500 mt-0.5">Enter your operational credentials to access the facility dashboard</p>
+<body class="min-h-screen flex flex-col justify-between p-4 sm:p-6 lg:p-10 font-sans antialiased">
+
+  <!-- Top Utility Bar -->
+  <div class="w-full max-w-5xl mx-auto flex items-center justify-between mb-4">
+    <a href="/" class="inline-flex items-center space-x-2 text-xs font-semibold text-blue-800 hover:text-blue-600 bg-white/80 hover:bg-white px-3.5 py-2 rounded-lg border border-blue-200 shadow-2xs transition">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      <span>Back to Landing Page</span>
+    </a>
+    <div class="hidden sm:flex items-center space-x-2 text-xs text-blue-800/80 font-medium">
+      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+      <span>System Status: Online &amp; Operational</span>
     </div>
-
-    <!-- Login Card -->
-    <div class="bg-white rounded-xl p-6 sm:p-8 border border-slate-200 shadow-md">
-      
-      {{#if error_msg}}
-        <div class="flex items-center space-x-2.5 p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-xs mb-4">
-          <svg class="w-4 h-4 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-          </svg>
-          <span>{{error_msg}}</span>
-        </div>
-      {{/if}}
-
-      {{#if success_msg}}
-        <div class="flex items-center space-x-2.5 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs mb-4">
-          <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>{{success_msg}}</span>
-        </div>
-      {{/if}}
-
-      <form method="POST" action="/login" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Official Email</label>
-          <input type="email" name="email" required placeholder="admin@jailpersonnel.com" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition" />
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">Password</label>
-            <a href="/forgot-password" class="text-xs text-blue-600 hover:underline">Forgot password?</a>
-          </div>
-          <input type="password" name="password" required placeholder="••••••••" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm transition" />
-        </div>
-
-        <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-sm transition mt-2">
-          Sign In
-        </button>
-      </form>
-
-      <!-- Default Credentials Quick Helper -->
-      <div class="mt-6 pt-4 border-t border-slate-100">
-        <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-600 space-y-0.5">
-          <div class="text-[11px] font-semibold text-slate-700 flex items-center justify-between mb-1">
-            <span>Default Administrator Credentials:</span>
-            <span class="text-emerald-700 font-medium">Ready</span>
-          </div>
-          <div>Email: <strong class="text-slate-900 font-mono">admin@jailpersonnel.com</strong></div>
-          <div>Password: <strong class="text-slate-900 font-mono">admin123</strong></div>
-        </div>
-      </div>
-
-      <div class="text-center mt-4">
-        <p class="text-xs text-slate-500">
-          Need an account?
-          <a href="/register" class="text-blue-600 hover:underline font-semibold ml-0.5">
-            Register here
-          </a>
-        </p>
-      </div>
-
-    </div>
-
   </div>
 
-  <footer class="mt-8 text-center text-xs text-slate-400">
-    &copy; 2026 Mindoro State University • Jail Personnel System
+  <!-- Main Landscape Login Container -->
+  <main class="flex-1 flex items-center justify-center w-full">
+    <div class="w-full max-w-5xl bg-white rounded-2xl border border-blue-200/90 shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+
+      <!-- Left Panel: Royal Blue Branding & Operational Overview (Landscape Left Side) -->
+      <div class="lg:col-span-6 bg-gradient-to-br from-blue-950 via-blue-900 to-sky-800 text-white p-7 sm:p-10 flex flex-col justify-between relative overflow-hidden">
+        <!-- Subtle decorative background circles -->
+        <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-sky-400/10 pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-16 w-72 h-72 rounded-full bg-blue-500/15 pointer-events-none"></div>
+
+        <div class="relative z-10">
+          <!-- Brand Header -->
+          <a href="/" class="inline-flex items-center space-x-3 group">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-500 to-sky-400 flex items-center justify-center text-white shadow-md border border-sky-300/30">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+              </svg>
+            </div>
+            <div>
+              <span class="font-extrabold text-xl tracking-tight text-white block leading-none">JailPersonnel</span>
+              <span class="text-xs text-sky-300 font-medium block mt-1">Booking &amp; Corrections Management</span>
+            </div>
+          </a>
+
+          <!-- Headline -->
+          <div class="mt-8">
+            <div class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-blue-800/70 border border-sky-400/30 text-sky-200 text-[11px] font-semibold uppercase tracking-wider mb-3">
+              <span>Authorized Personnel Portal</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+              Centralized Facility Booking &amp; Officer Command
+            </h1>
+            <p class="text-xs sm:text-sm text-blue-100/85 mt-2.5 leading-relaxed">
+              Sign in to manage facility reservations, visitor &amp; legal bookings, officer shift deployments, daily muster attendance, and official Excel reports.
+            </p>
+          </div>
+
+          <!-- Highlight Feature Pills -->
+          <div class="mt-6 space-y-2.5">
+            <div class="flex items-center space-x-3 p-2.5 rounded-xl bg-blue-900/50 border border-blue-700/60">
+              <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-300 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <div class="text-xs">
+                <div class="font-semibold text-white">Facility Bookings &amp; Printable Gate Passes</div>
+                <div class="text-blue-200/80 text-[11px]">Visitation, legal consultation, court escort &amp; check-in tracking</div>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-3 p-2.5 rounded-xl bg-blue-900/50 border border-blue-700/60">
+              <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-300 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+              </div>
+              <div class="text-xs">
+                <div class="font-semibold text-white">Roster, Shift Deployments &amp; Excel Exports</div>
+                <div class="text-blue-200/80 text-[11px]">Real-time officer muster roll and one-click .xls report downloads</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Default Credentials Helper Box with 1-Click Auto-Fill -->
+        <div class="relative z-10 mt-7 pt-5 border-t border-blue-800/80">
+          <div class="p-3.5 rounded-xl bg-blue-950/70 border border-blue-700/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="text-xs space-y-0.5">
+              <div class="text-[11px] font-bold text-sky-300 uppercase tracking-wider">Default Admin Access</div>
+              <div class="text-blue-100">Email: <span class="font-mono font-semibold text-white">admin@jailpersonnel.com</span></div>
+              <div class="text-blue-100">Password: <span class="font-mono font-semibold text-white">admin123</span></div>
+            </div>
+            <button type="button" id="fillDemoCredentials" class="px-3 py-2 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-200 border border-sky-400/40 text-xs font-semibold transition flex-shrink-0 cursor-pointer">
+              Auto-Fill Admin
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Sign-In Form (Landscape Right Side) -->
+      <div class="lg:col-span-6 p-7 sm:p-10 lg:p-12 flex flex-col justify-center bg-white">
+        <div class="mb-6">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Authentication</span>
+          <h2 class="text-2xl font-extrabold text-slate-900 mt-0.5">Sign in to your account</h2>
+          <p class="text-xs text-slate-500 mt-1">Enter your registered official email and password below.</p>
+        </div>
+
+        {{#if error_msg}}
+          <div class="flex items-center space-x-2.5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs mb-5">
+            <svg class="w-4 h-4 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+            <span class="font-medium">{{error_msg}}</span>
+          </div>
+        {{/if}}
+
+        {{#if success_msg}}
+          <div class="flex items-center space-x-2.5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs mb-5">
+            <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span class="font-medium">{{success_msg}}</span>
+          </div>
+        {{/if}}
+
+        <form method="POST" action="/login" class="space-y-4">
+          <div>
+            <label for="loginEmail" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Official Email Address
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                </svg>
+              </div>
+              <input id="loginEmail" type="email" name="email" required placeholder="admin@jailpersonnel.com" class="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition" />
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="loginPassword" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Password
+              </label>
+              <a href="/forgot-password" class="text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline">
+                Forgot password?
+              </a>
+            </div>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+              </div>
+              <input id="loginPassword" type="password" name="password" required placeholder="••••••••" class="w-full pl-10 pr-16 py-2.5 bg-slate-50/70 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition" />
+              <button type="button" id="togglePasswordBtn" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-xs font-semibold text-slate-500 hover:text-blue-600 cursor-pointer">
+                Show
+              </button>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 text-white font-semibold text-sm rounded-xl shadow-md shadow-blue-600/20 transition flex items-center justify-center space-x-2 cursor-pointer">
+              <span>Sign In to Dashboard</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+
+        <!-- Bottom Links -->
+        <div class="mt-7 pt-5 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+          <div>
+            Don't have an officer account?
+            <a href="/register" class="text-blue-600 hover:text-blue-700 font-bold hover:underline ml-1">
+              Create Account
+            </a>
+          </div>
+          <a href="/" class="text-slate-500 hover:text-blue-600 font-medium">
+            Landing Page →
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Minimal Footer -->
+  <footer class="mt-6 text-center text-xs text-slate-500">
+    &copy; 2026 Mindoro State University • Jail Personnel &amp; Facility Booking System
   </footer>
+
+  <script>
+    (function() {
+      const fillBtn = document.getElementById('fillDemoCredentials');
+      const emailInput = document.getElementById('loginEmail');
+      const passInput = document.getElementById('loginPassword');
+      const toggleBtn = document.getElementById('togglePasswordBtn');
+
+      if (fillBtn && emailInput && passInput) {
+        fillBtn.addEventListener('click', function() {
+          emailInput.value = 'admin@jailpersonnel.com';
+          passInput.value = 'admin123';
+          emailInput.focus();
+        });
+      }
+
+      if (toggleBtn && passInput) {
+        toggleBtn.addEventListener('click', function() {
+          if (passInput.type === 'password') {
+            passInput.type = 'text';
+            toggleBtn.textContent = 'Hide';
+          } else {
+            passInput.type = 'password';
+            toggleBtn.textContent = 'Show';
+          }
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
